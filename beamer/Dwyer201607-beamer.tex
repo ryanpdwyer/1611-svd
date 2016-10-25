@@ -416,14 +416,19 @@ In non-linear least squares, Jacobian of residuals $J$ gives a good guess for th
 
 \begin{frame}
 \frametitle{Optimization applications: least squares}
-Show pictures again.
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/linear_fit.pdf}
+\end{figure}
+\begin{equation*}
+\frac{1}{2} r^T r = \frac{1}{2} x^T A^T A x + y^T A x + y^T y
+\end{equation*}
 \end{frame}
 
 \begin{frame}
 \frametitle{Optimization applications: Landweber iteration}
 Choose the next value of the parameter vector $x$ using,
 \begin{align*}
-x_{k+1}& = x_k - \alpha \, A^T r_k 
+x_{k+1}& = x_k + \alpha \, A^T r_k 
 \end{align*}
 \begin{block}{}
 This is gradient descent with a fixed step size, using the residuals $r$ to compute the gradient direction (since $\nabla f(x_k) = - A^T r_k$)

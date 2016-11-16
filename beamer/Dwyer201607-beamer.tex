@@ -12,6 +12,7 @@
 \usecolortheme{beaver}
 \setbeamertemplate{itemize items}[circle]
 
+
 % GALLEY
 %\RequirePackage[displaymath,mathlines]{lineno}  % implement numbered lines -- pagewise for two-column mode
 % \documentclass[10pt,aps,prl,twocolumn,galley,citeautoscript,superscriptaddress,byrevtex,nofootinbib,nobalancelastpage,floatfix]{revtex4}
@@ -33,8 +34,11 @@
 \newcolumntype{C}{>{\zz}{c}}
 \makeatother
 \usepackage{bm}                       % need for bold greek letters
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue}
 \usepackage{mciteplus}
 \usepackage{caption}
+\captionsetup[figure]{labelformat=empty}% redefines the caption setup of the figures environment in the beamer class.
 \usepackage{booktabs}
 \captionsetup{font=scriptsize,labelfont=scriptsize}
 \usepackage{natbib}  % bibliography
@@ -68,7 +72,6 @@
 % Easy text subscripts
 \newcommand{\st}[1]{_\text{#1}}
 
-
 % See http://tex.stackexchange.com/questions/21598/how-to-color-math-symbols
 \makeatletter
 \def\mathcolor#1#{\@mathcolor{#1}}
@@ -93,8 +96,8 @@
     \inst{1} Department of Chemistry and Chemical Biology \\
     Cornell University}
 
-\date[2016.11.07]{Marohn Group Meeting \\
-November 7, 2016}
+\date[2016.11.16]{Marohn Group Meeting \\
+November 16, 2016}
 
 \begin{document}
 
@@ -124,7 +127,7 @@ November 7, 2016}
 \underbrace{A^n = A A \ldots = \; ? \tfrac{}{}}_\text{$n$ matrix multiplications: slow, obtuse}& & \underbrace{e^{A t} = I + A t + \tfrac{1}{2} A^2 t^2 + \ldots = \; ?}_\text{power series: potentially even worse!}
 \end{align*}
 \begin{align*}
-A& = Q \Lambda Q^{-1} \Rightarrow & & \underbrace{A^n = Q \Lambda^n Q^{-1}, \quad e^{At} = Q e^{\Lambda} Q^{-1}}_\text{scalar functions: fast, understandable}
+A& = \underbrace{Q \Lambda Q^{-1}}_{\substack{\Lambda \: \text{diagonal}}} \Rightarrow & & \underbrace{A^n = Q \Lambda^n Q^{-1}, \quad e^{At} = Q e^{\Lambda} Q^{-1}}_\text{scalar functions: fast, understandable}
 \end{align*}
 \begin{itemize}
     \item Eigendecomposition diagonalizes square $n \times n$ matrices
@@ -156,7 +159,7 @@ Understand how $m \times n$ matrices $A$ transform $n$-dimensional $\mathbf{x}$ 
 \end{frame}
 
 \begin{frame}
-\frametitle{Problems that can be formulated $\mathbf{y} = A \mathbf{x}$}
+\frametitle{Problems that can be formulated as $\mathbf{y} = A \mathbf{x}$}
 \begin{exampleblock}{Examples}
 \begin{table}[h!]
 \centering
@@ -193,9 +196,7 @@ Toeplitz matrix for $H$%
 \pause
 \begin{block}{}
 \centering
-Majority of scientists' data analysis and signal processing
-
-falls into one of these categories!
+Majority of scientists' data analysis and signal processing falls into one of these categories!
 \end{block}
 \end{frame}
 
@@ -212,10 +213,53 @@ A = U \Sigma V^T
 \end{itemize}
 \begin{figure}
 \includegraphics[width=2in]{figs/Singular-Value-Decomposition.png}
-\caption{By Georg-Johann - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=11342212}
+\caption{By Georg-Johann - Own work, CC BY-SA 3.0, \href{https://commons.wikimedia.org/w/index.php?curid=11342212}{https://commons.wikimedia.org/w/index.php?curid=11342212}}
 \end{figure}
 \end{frame}
 
+\begin{frame}
+\frametitle{What is the matrix $A$?}
+\begin{columns}
+\column{0.58 \textwidth}
+Fit data points to a parabola,
+$$f(t) = c_0 + c_1 t + c_2 t^2.$$
+Since $f$ is \emph{linear} in each parameter $c_i$,
+the output $y$ of the function at a collection of times $t_1, t_2, \ldots t_M$ as,
+$$y = A x$$.
+\pause
+\column{0.4 \textwidth}
+\vspace{-0.5in}
+\begin{figure}
+\includegraphics[height=0.86\textheight]{figs/A.pdf}
+\end{figure}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{SVD: picture}
+\vspace{-0.3in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/svd-components.pdf}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{SVD: picture}
+\vspace{-0.1in}
+\begin{figure}
+\includegraphics[width=0.7\textwidth]{figs/svd-components.pdf}
+\end{figure}
+$$y = A x = U \Sigma V^T x$$
+\vspace{-0.2in}
+\begin{exampleblock}{}
+$V^T$ changes bases for the space of $x$ (rotation).
+
+$\Sigma$ scales each basis vector $v_i$ by $\sigma_i$.
+
+$U$ transforms the scaled $v_i$ (in the space of $x$) to the space of $y$.
+\end{exampleblock}
+\end{frame}
 
 % \begin{frame}
 % \frametitle{Action of a matrix}
@@ -228,38 +272,52 @@ A = U \Sigma V^T
 \begin{frame}
 \frametitle{Example: Exponential decay curve fitting}
 \begin{columns}
+\onslide<1->{
     \column{0.3\textwidth}
-        \begin{block}{}
+        \begin{alertblock}{}
         How does changing parameters affect the best-fit result?
-        \end{block}
-        \begin{block}{}
+        \end{alertblock}
+        \begin{alertblock}{}
         How does changing data affect the parameter values?
-        \end{block}
-
+        \end{alertblock}
+}
+\onslide<2->{
+    \begin{block}{}
+    $\delta y_0$ affects $y$ near $t=0$.
+    \end{block}
+}
+\onslide<1->{
     \column{0.68\textwidth}
     \begin{figure}
         \includegraphics[width=\textwidth]{figs/dA.pdf}
     \end{figure}
-
+}
 \end{columns}
 \end{frame}
 
 \begin{frame}
 \frametitle{Example: Exponential decay curve fitting}
 \begin{columns}
+\onslide<1->{
     \column{0.3\textwidth}
-        \begin{block}{}
+        \begin{alertblock}{}
         How does changing parameters affect the best-fit result?
-        \end{block}
-        \begin{block}{}
+        \end{alertblock}
+        \begin{alertblock}{}
         How does changing data affect the parameter values?
-        \end{block}
-
+        \end{alertblock}
+}
+\onslide<2->{
+    \begin{exampleblock}{}
+    $\delta \tau$ affects $y$ near $t=\tau_0$
+    \end{exampleblock}
+}
+\onslide<1->{
     \column{0.68\textwidth}
     \begin{figure}
         \includegraphics[width=\textwidth]{figs/dtau.pdf}
     \end{figure}
-
+}
 \end{columns}
 \end{frame}
 
@@ -306,9 +364,26 @@ and $\left( f(t_0) \; \; f(t_1) \; \; f(t_2) \right)^T$ are poor bases to descri
 
 \begin{frame}
 \frametitle{Singular value decomposition}
+\begin{columns}
+\hspace{-0.35in}
+\column{0.7\textwidth}
+\vspace{-0.36in}
 \begin{figure}
-\includegraphics[height=0.9\textheight]{figs/dy-usv.pdf}
+\includegraphics[height=0.86\textheight]{figs/dy-usv.pdf}
 \end{figure}
+\column{0.25\textwidth}
+$$\delta y = U \Sigma V^T \delta x$$
+$$\delta x = V \Sigma^{+} U^T \delta y$$
+$V$: basis for parameters
+
+$\Sigma$: scale basis vectors
+
+$U$: basis for $\delta y(t)$
+
+\vspace{0.2in}
+
+Each component $u_i \sigma_i v_i$ can be analyzed individually.
+\end{columns}
 \end{frame}
 
 \begin{frame}
@@ -415,13 +490,17 @@ In non-linear least squares, Jacobian of residuals $J$ gives a good guess for th
 \end{frame}
 
 \begin{frame}
-\frametitle{Optimization applications: least squares}
+\frametitle{Best fit line, minimizing $f = \frac{1}{2} r^T r$}
 \begin{figure}
-\includegraphics[width=\textwidth]{figs/linear_fit.pdf}
+\includegraphics[width=0.93\textwidth]{figs/linear_fit.pdf}
 \end{figure}
-\begin{equation*}
-\frac{1}{2} r^T r = \frac{1}{2} x^T A^T A x + y^T A x + y^T y
-\end{equation*}
+\begin{block}{}
+Curvature of $f$ is $\frac{1}{2}A^T A$.
+
+Eigenvectors of $A^T A$ are the vectors $v_i$ from the SVD.
+
+Eigenvalues of $A^T A$ are $\sigma_i^2$.
+\end{block}
 \end{frame}
 
 \begin{frame}
@@ -437,28 +516,215 @@ This is gradient descent with a fixed step size, using the residuals $r$ to comp
 
 \begin{frame}
 \frametitle{Stability of Landweber iteration}
-\begin{columns}
-\column{0.46\textwidth}
-Define the error vector $e_k$,
-$$e_k = x^+ - x_k$$
-\begin{itemize}
-    \item $x^+$: least squares solution 
-    \item $x_k$:  $k^\text{th}$ parameter vector
-\end{itemize}
-The Landweber iteration can be written as,
+Write the iteration in terms of the least-squares solution $x^+$, and the error $e_k$,
 \begin{align*}
-x_{k+1}& = x^+ - e_{k+1} = x^+ - e_k + \alpha \, A^T A e_k \\
-e_{k+1}& = (I - \alpha A^T A) e_k
+e_k & = x^+ - x_k \hspace{0.25in} \Rightarrow \hspace{0.25in} x_k = x^+ - e_k
 \end{align*}
-\column{0.46\textwidth}
-For an initial guess of $\mathbf{0}$, the initial error is $x^+$, so
-$$ x_{k} = (I - (\alpha A^T A)^k) x^+ $$
-This corresponds to pulling in components of the SVD,
-$$  x_{k} = V (I - (\alpha \Sigma^2)^k) V^T x^+  $$
+Write the recursion in terms of the error:
+\begin{align*}
+x_{k+1}& = x^+ - e_{k+1} = x_k + \alpha \, A^T r_k \\
+x_{k+1}& = x^+ - e_{k+1} = x^+ - e_k + \alpha \, A^T A e_k \\
+e_{k+1}& = (I - \alpha A^T A) e_k.
+\intertext{Write $A^T A$ using the SVD,}
+e_{k+1}& = (\underbrace{I}_{VV^T} - \alpha V \Sigma \underbrace{U^T U}_{I} \Sigma V^T) e_k\\
+e_{k+1}& = V(I - \alpha \Sigma^2)V^T e_k \\
+V^T e_{k+1}& = (I - \alpha \Sigma^2)V^T e_k
+\end{align*}
+\end{frame}
+
+% \begin{align*}
+% \intertext{Write $A^T A$ using the SVD,}
+% e_{k+1}& = (\underbrace{I}_{VV^T} - \alpha V \Sigma \underbrace{U^T U}_{I} \Sigma V^T) e_k\\
+% e_{k+1}& = V(I - \alpha \Sigma^2)V^T e_k \\
+% V^T e_{k+1}& = (I - \alpha \Sigma^2)V^T e_k
+% \end{align*}
+
+
+
+\begin{frame}
+\frametitle{Stability of Landweber iteration}
+Define the SVD basis with hats, $\hat{x} = V^T x$:
+\begin{align*}
+V^T e_{k+1}& = (I - \alpha \Sigma^2)V^T e_k \\
+\hat{e}_{k+1}& = (I - \alpha \Sigma^2) \hat{e}_k.
+\intertext{The explicit solution is}
+\hat{e}_k& = (\underbrace{I - \alpha \Sigma^2}_{\text{diagonal}})^k \hat{e}_0.
+\intertext{This is stable for $\alpha < 2/\sigma_1^2$. For an initial guess of $\mathbf{0}$, the initial error $e_0 = x^+$}
+\hat{e}_k& = (I - \alpha \Sigma^2)^k \hat{x}^+
+\intertext{The $k^{\text{th}}$ solution vector is}
+\hat{x}_k& = (I - (I - \alpha \Sigma^2)^k) \hat{x}^+
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Different regularized solutions}
+\begin{columns}
+\column{0.3\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/sv-spectrum.pdf}
+\end{figure}
+\column{0.68\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/regularization.pdf}
+\end{figure}
+\end{columns}
+\begin{exampleblock}{}
+Regularized solutions can be written in terms of effect on SVD components.
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}
+\frametitle{Image compression}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill-1.png}
+\end{figure}
+\end{columns}
+Use truncated SVD for image compression, keeping largest $N$ singular values.
+\end{frame}
+
+\begin{frame}
+\frametitle{Image compression}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill-3.png}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Image compression}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill-10.png}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Image compression}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill-30.png}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Image compression}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill-50.png}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Image compression}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/mandrill-100.png}
+\end{figure}
 \end{columns}
 \end{frame}
 
 
+\begin{frame}
+\frametitle{Image reconstruction}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/noise-mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/noise-mandrill-3.png}
+\end{figure}
+\end{columns}
+Use truncated SVD for image reconstruction, keeping largest $N$ singular values.
+\end{frame}
+
+\begin{frame}
+\frametitle{Image reconstruction}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/noise-mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/noise-mandrill-10.png}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Image reconstruction}
+\begin{columns}
+\column{0.5\textwidth}
+\hspace{-0.25in}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/noise-mandrill.png}
+\end{figure}
+\column{0.5\textwidth}
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/noise-mandrill-20.png}
+\end{figure}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Conclusions}
+\begin{block}{SVD gives information about}
+\begin{itemize}
+    \item How does a small change $\delta \mathbf{x}$ affect $\mathbf{y}$?
+    \item How does a small change $\delta \mathbf{y}$ affect $\mathbf{x}$?
+    \item Is $A$ singular or \emph{almost} singular?
+    \item How well can $A$ be approximated / compressed?
+\end{itemize}
+\end{block}
+\begin{alertblock}{}
+Really useful for statistics, data analysis, etc.
+\end{alertblock}
+\end{frame}
 
 % \end{frame}
 
